@@ -37,6 +37,7 @@ time-limited downloads after payment.
 - optional preview per title
 - tokenized post-payment delivery
 - separate preview excerpt enforcement so the paid file is never exposed publicly
+- base-price product model with live FX display and quote-locked sats checkout
 
 ## Important Constraint
 
@@ -52,3 +53,13 @@ Use LUD-09 URL success actions and Vercel hosting:
 - LNbits API key stored in host environment variables
 - paid PDFs stored outside the public web root
 - preview excerpts stored publicly only as separate excerpt files, never as the full paid PDF
+
+## Pricing Model
+
+- Each product stores a base `pricing.amount` and `pricing.currency`.
+- The import script calculates `priceSats` as an imported snapshot for sorting
+  and fallback display.
+- The storefront lets the user choose a display currency globally.
+- LNURL pay requests calculate the current sats amount from the base price.
+- A signed quote token is embedded into the LNURL callback URL so the sats
+  amount stays fixed for that checkout session even if rates move afterward.

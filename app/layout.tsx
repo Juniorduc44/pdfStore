@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { CurrencyProvider } from '@/components/currency-provider'
+import { CurrencySwitcher } from '@/components/currency-switcher'
+
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -16,21 +19,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="page-frame">
-          <header className="site-header">
-            <Link className="brand" href="/">
-              <img alt="PDF Store" src="/brand-mark.svg" />
-              <div>
-                <strong>PDF Store</strong>
-                <span>Lightning-native digital downloads</span>
+        <CurrencyProvider>
+          <div className="page-frame">
+            <header className="site-header">
+              <Link className="brand" href="/">
+                <img alt="PDF Store" src="/brand-mark.svg" />
+                <div>
+                  <strong>PDF Store</strong>
+                  <span>Lightning-native digital downloads</span>
+                </div>
+              </Link>
+              <div className="header-actions">
+                <CurrencySwitcher />
+                <nav className="site-nav">
+                  <Link href="/">Catalog</Link>
+                </nav>
               </div>
-            </Link>
-            <nav className="site-nav">
-              <Link href="/">Catalog</Link>
-            </nav>
-          </header>
-          {children}
-        </div>
+            </header>
+            {children}
+          </div>
+        </CurrencyProvider>
       </body>
     </html>
   )

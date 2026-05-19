@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { CheckoutPanel } from '@/components/checkout-panel'
-import { formatDate, formatFileSize, formatSats } from '@/lib/format'
+import { LivePriceBlock } from '@/components/live-price-block'
+import { formatConfiguredPrice, formatDate, formatFileSize, formatSats } from '@/lib/format'
 import { getProductBySlug } from '@/lib/products'
 
 type ProductPageProps = {
@@ -27,12 +28,14 @@ export default function ProductPage({ params }: ProductPageProps) {
           <h1>{product.title}</h1>
           <p className="lead">{product.description}</p>
           <div className="detail-stats">
-            <span>{formatSats(product.priceSats)} sats</span>
+            <span>{formatConfiguredPrice(product.pricing.amount, product.pricing.currency)}</span>
+            <span>{formatSats(product.priceSats)} sats snapshot</span>
             <span>{formatFileSize(product.fileSizeBytes)}</span>
             {product.pageCount ? <span>{product.pageCount} pages</span> : null}
             {product.author ? <span>{product.author}</span> : null}
             <span>Added {formatDate(product.createdAt)}</span>
           </div>
+          <LivePriceBlock priceSats={product.priceSats} pricing={product.pricing} />
           <div className="tag-list">
             {product.tags.map((tag) => (
               <span className="tag-chip" key={tag}>
@@ -54,7 +57,11 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      <CheckoutPanel priceSats={product.priceSats} slug={product.slug} />
+      <CheckoutPanel
+        priceSats={product.priceSats}
+        pricing={product.pricing}
+        slug={product.slug}
+      />
     </main>
   )
 }

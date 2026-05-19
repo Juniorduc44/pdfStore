@@ -2,6 +2,22 @@ export function formatSats(value: number): string {
   return new Intl.NumberFormat('en-US').format(value)
 }
 
+export function formatConfiguredPrice(amount: number, currency: string): string {
+  if (currency.toUpperCase() === 'SATS') {
+    return `${formatSats(Math.round(amount))} sats`
+  }
+
+  if (currency.toUpperCase() === 'BTC') {
+    return `${amount.toFixed(8).replace(/0+$/, '').replace(/\.$/, '')} BTC`
+  }
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 2
+  }).format(amount)
+}
+
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) {
     return `${bytes} B`

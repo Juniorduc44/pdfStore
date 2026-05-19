@@ -56,6 +56,14 @@ input {
   margin-bottom: 32px;
 }
 
+.header-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
 .brand {
   align-items: center;
   display: inline-flex;
@@ -74,7 +82,8 @@ h1,
 h2,
 .button,
 .tag,
-.section-kicker {
+.section-kicker,
+select {
   font-family: 'Trebuchet MS', 'Gill Sans', sans-serif;
 }
 
@@ -311,6 +320,10 @@ h2,
   padding: 12px 18px;
 }
 
+.button.mini {
+  padding: 10px 14px;
+}
+
 .button.primary {
   background: var(--ink);
   color: white;
@@ -323,6 +336,65 @@ h2,
 
 .button.tertiary {
   color: var(--accent-dark);
+}
+
+.currency-switcher {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.currency-select {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.currency-select span,
+.currency-note,
+.live-price span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.currency-select select,
+.custom-currency-form input {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+}
+
+.custom-currency-form {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.custom-currency-form input {
+  text-transform: uppercase;
+  width: 96px;
+}
+
+.currency-note.error {
+  color: #9b342b;
+}
+
+.live-price {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.live-price.compact {
+  margin: 8px 0 10px;
+}
+
+.live-price strong {
+  font-family: 'Trebuchet MS', 'Gill Sans', sans-serif;
+  font-size: 1.1rem;
 }
 
 .product-page,
@@ -419,6 +491,12 @@ h2,
     align-items: flex-start;
     flex-direction: column;
     gap: 16px;
+  }
+
+  .header-actions,
+  .currency-switcher {
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   .hero,

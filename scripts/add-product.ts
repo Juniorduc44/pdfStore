@@ -3,6 +3,7 @@ import path from 'path'
 import readline from 'readline/promises'
 import { stdin as input, stdout as output } from 'process'
 
+import { convertPricedAmountToSats, fetchBtcRates, normalizeCurrencyCode } from '../lib/currency'
 import type { Product, ProductStatus } from '../types/product'
 
 const APP_ROOT = process.cwd()
@@ -123,6 +124,38 @@ async function promptOptionalNumber(
   return Math.floor(parsed)
 }
 
+async function promptPrice(
+  rl: readline.Interface
+): Promise<{ amount: number; currency: string; importedSats: number }> {
+  const currency = normalizeCurrencyCode(
+    await promptRequired(rl, 'Pricing currency code (SATS, BTC, USD, EUR, etc.)')
+  )
+  const amount = Number(await promptRequired(rl, `Price amount in ${currency}`))
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error('Price amount must be a positive number.')
+  }
+
+  if (currency === 'SATS') {
+    const importedSats = Math.round(amount)
+    return { amount, currency, importedSats }
+  }
+
+  if (currency === 'BTC') {
+    const importedSats = Math.round(amount * 100_000_000)
+    return { amount, currency, importedSats }
+  }
+
+  const rates = await fetchBtcRates()
+  const importedSats = convertPricedAmountToSats(amount, currency, rates.rates)
+
+  return {
+    amount,
+    currency,
+    importedSats
+  }
+}
+
 async function main() {
   await ensureDirectories()
 
@@ -135,7 +168,7 @@ async function main() {
     const description = await promptRequired(rl, 'Short description')
     const details = await promptRequired(rl, 'Detailed product copy')
     const author = (await rl.question('Author (optional): ')).trim() || undefined
-    const priceSats = Number(await promptRequired(rl, 'Price in sats'))
+    const pricing = await promptPrice(rl)
     const tagsInput = await rl.question('Tags (comma-separated): ')
     const pageCount = await promptOptionalNumber(rl, 'Page count (optional)')
     const featured = await promptBoolean(rl, 'Feature this product on the storefront', false)
@@ -148,10 +181,6 @@ async function main() {
     const status = (
       await rl.question('Status [live/draft, default live]: ')
     ).trim().toLowerCase() as ProductStatus
-
-    if (!Number.isFinite(priceSats) || priceSats <= 0) {
-      throw new Error('Price must be a positive number of sats.')
-    }
 
     const products = await loadProducts()
 
@@ -192,7 +221,8 @@ async function main() {
       title,
       description,
       details,
-      priceSats: Math.floor(priceSats),
+      pricing,
+      priceSats: pricing.importedSats,
       coverImage: toPublicPath('uploads', 'covers', path.basename(coverTarget)),
       pdfPath: path.join('storage', 'pdfs', path.basename(pdfTarget)),
       previewEnabled,
@@ -214,6 +244,8 @@ async function main() {
 
     output.write(`\nAdded "${title}" to the storefront.\n`)
     output.write(`Catalog entry: ${slug}\n`)
+    output.write(`Configured price: ${pricing.amount} ${pricing.currency}\n`)
+    output.write(`Imported sats snapshot: ${pricing.importedSats}\n`)
     output.write(`Private PDF copied to: ${product.pdfPath}\n`)
     output.write(`Cover copied to: ${product.coverImage}\n`)
     if (product.previewEnabled) {

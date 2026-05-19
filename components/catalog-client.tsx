@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
+import { LivePriceBlock } from '@/components/live-price-block'
 import { formatFileSize, formatSats } from '@/lib/format'
 import type { Product } from '@/types/product'
 
@@ -72,11 +73,12 @@ export function CatalogClient({ products, tags }: CatalogClientProps) {
             </div>
             <div className="product-copy">
               <div className="eyebrow-row">
-                <span>{formatSats(product.priceSats)} sats</span>
+                <span>{formatSats(product.priceSats)} sats snapshot</span>
                 <span>{formatFileSize(product.fileSizeBytes)}</span>
               </div>
               <h2>{product.title}</h2>
               <p>{product.description}</p>
+              <LivePriceBlock compact priceSats={product.priceSats} pricing={product.pricing} />
               <div className="meta-row">
                 {product.author ? <span>{product.author}</span> : null}
                 {product.pageCount ? <span>{product.pageCount} pages</span> : null}

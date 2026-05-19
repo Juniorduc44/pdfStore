@@ -1,11 +1,18 @@
 export type ProductStatus = 'draft' | 'live'
 
+export type ProductPricing = {
+  amount: number
+  currency: string
+  importedSats: number
+}
+
 export type Product = {
   id: string
   slug: string
   title: string
   description: string
   details: string
+  pricing: ProductPricing
   priceSats: number
   coverImage: string
   pdfPath: string

@@ -21,6 +21,12 @@ export function buildPayRequestUrl(slug: string): string {
   return `${getAppUrl()}/api/lnurl/pay/${slug}`
 }
 
-export function buildCallbackUrl(slug: string): string {
-  return `${getAppUrl()}/api/lnurl/pay/${slug}/callback`
+export function buildCallbackUrl(slug: string, quote?: string): string {
+  const url = new URL(`${getAppUrl()}/api/lnurl/pay/${slug}/callback`)
+
+  if (quote) {
+    url.searchParams.set('quote', quote)
+  }
+
+  return url.toString()
 }

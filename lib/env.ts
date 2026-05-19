@@ -33,3 +33,13 @@ export function getDownloadLinkTtlMinutes(): number {
 
   return Math.floor(value)
 }
+
+export function getPriceQuoteTtlMinutes(): number {
+  const value = Number(process.env.PRICE_QUOTE_TTL_MINUTES ?? '10')
+
+  if (!Number.isFinite(value) || value < 1) {
+    return 10
+  }
+
+  return Math.floor(value)
+}

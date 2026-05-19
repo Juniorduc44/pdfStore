@@ -1,7 +1,14 @@
 import rawProducts from '@/data/products.json'
 import type { Product } from '@/types/product'
 
-const products = rawProducts as Product[]
+const products = (rawProducts as Product[]).map((product) => ({
+  ...product,
+  pricing: product.pricing ?? {
+    amount: product.priceSats,
+    currency: 'SATS',
+    importedSats: product.priceSats
+  }
+}))
 
 export function getAllProducts(): Product[] {
   return [...products].sort((left, right) =>

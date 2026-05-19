@@ -3,14 +3,17 @@
 import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 
-import { formatSats } from '@/lib/format'
+import { LivePriceBlock } from '@/components/live-price-block'
+import { formatConfiguredPrice } from '@/lib/format'
+import type { ProductPricing } from '@/types/product'
 
 type CheckoutPanelProps = {
   slug: string
   priceSats: number
+  pricing: ProductPricing
 }
 
-export function CheckoutPanel({ slug, priceSats }: CheckoutPanelProps) {
+export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) {
   const [origin, setOrigin] = useState('')
 
   useEffect(() => {
@@ -24,11 +27,13 @@ export function CheckoutPanel({ slug, priceSats }: CheckoutPanelProps) {
     <section className="checkout-panel">
       <div className="checkout-copy">
         <span className="section-kicker">Lightning checkout</span>
-        <h2>{formatSats(priceSats)} sats</h2>
+        <h2>{formatConfiguredPrice(pricing.amount, pricing.currency)}</h2>
         <p>
-          Scan the QR code with any LNURL-pay compatible wallet. After payment,
-          the wallet will reveal a short-lived download link.
+          Scan the QR code with any LNURL-pay compatible wallet. The invoice
+          amount is quoted in sats from the current FX rate and locked for the
+          LNURL checkout session.
         </p>
+        <LivePriceBlock priceSats={priceSats} pricing={pricing} />
       </div>
 
       <div className="checkout-qr">

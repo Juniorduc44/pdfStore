@@ -8,6 +8,15 @@ type DownloadTokenPayload = {
   expiresAt: number
 }
 
+type PriceQuotePayload = {
+  slug: string
+  amountSats: number
+  amountMsats: number
+  currency: string
+  pricedAmount: number
+  expiresAt: number
+}
+
 function encode(value: string): string {
   return Buffer.from(value, 'utf8').toString('base64url')
 }
@@ -47,6 +56,39 @@ export function verifyDownloadToken(token: string): DownloadTokenPayload | null 
   }
 
   const payload = JSON.parse(decode(encodedPayload)) as DownloadTokenPayload
+
+  if (payload.expiresAt <= Date.now()) {
+    return null
+  }
+
+  return payload
+}
+
+export function createPriceQuoteToken(payload: PriceQuotePayload): string {
+  const encodedPayload = encode(JSON.stringify(payload))
+  const signature = sign(encodedPayload)
+  return `${encodedPayload}.${signature}`
+}
+
+export function verifyPriceQuoteToken(token: string): PriceQuotePayload | null {
+  const [encodedPayload, signature] = token.split('.')
+
+  if (!encodedPayload || !signature) {
+    return null
+  }
+
+  const expected = sign(encodedPayload)
+  const receivedBuffer = Buffer.from(signature)
+  const expectedBuffer = Buffer.from(expected)
+
+  if (
+    receivedBuffer.length !== expectedBuffer.length ||
+    !timingSafeEqual(receivedBuffer, expectedBuffer)
+  ) {
+    return null
+  }
+
+  const payload = JSON.parse(decode(encodedPayload)) as PriceQuotePayload
 
   if (payload.expiresAt <= Date.now()) {
     return null

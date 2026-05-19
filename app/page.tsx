@@ -1,6 +1,6 @@
 import { CatalogClient } from '@/components/catalog-client'
 import { getCatalogTags, getFeaturedProducts, getLiveProducts } from '@/lib/products'
-import { formatSats } from '@/lib/format'
+import { LivePrice } from '@/components/live-price'
 
 export default function HomePage() {
   const products = getLiveProducts()
@@ -28,7 +28,7 @@ export default function HomePage() {
             <span>Live titles</span>
           </div>
           <div>
-            <strong>{formatSats(lowestPrice)}</strong>
+            <strong><LivePrice priceSats={lowestPrice} /></strong>
             <span>Starting price</span>
           </div>
           <div>
@@ -45,11 +45,11 @@ export default function HomePage() {
         </div>
         <div>
           <strong>Preview support</strong>
-          <span>Use the full PDF or a separate preview excerpt for each title.</span>
+          <span>Separate preview excerpts only, never the paid PDF itself.</span>
         </div>
         <div>
-          <strong>Tokenized delivery</strong>
-          <span>Short-lived download links generated after Lightning payment.</span>
+          <strong>Real-time FX display</strong>
+          <span>Show BTC, USD, or a custom currency code from the live rate feed.</span>
         </div>
       </section>
 
