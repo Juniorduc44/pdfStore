@@ -84,3 +84,13 @@ The catalog stores a base price per product and converts to the selected display
 currency in real time. LNURL checkout quotes a sats amount from the current FX
 rate and signs that quote so the wallet callback cannot drift to a different
 amount mid-checkout.
+
+## Store Identity
+
+The storefront also displays the store Lightning Address for buyer visibility:
+
+- `puffyred579@walletofsatoshi.com`
+
+This is presented as the store payout identity only. The actual checkout flow
+still uses the app's own LNURL endpoints so product-specific payment verification
+and download delivery continue to work correctly.

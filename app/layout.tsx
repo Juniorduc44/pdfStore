@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: 'Anonymous Lightning-native PDF storefront'
 }
 
+const LIGHTNING_ADDRESS = 'puffyred579@walletofsatoshi.com'
+
 export default function RootLayout({
   children
 }: Readonly<{
@@ -30,6 +32,10 @@ export default function RootLayout({
                 </div>
               </Link>
               <div className="header-actions">
+                <div className="owner-lightning">
+                  <span>Lightning Address</span>
+                  <code>{LIGHTNING_ADDRESS}</code>
+                </div>
                 <CurrencySwitcher />
                 <nav className="site-nav">
                   <Link href="/">Catalog</Link>
@@ -37,6 +43,10 @@ export default function RootLayout({
               </div>
             </header>
             {children}
+            <footer className="site-footer">
+              <span>Store payout address</span>
+              <code>{LIGHTNING_ADDRESS}</code>
+            </footer>
           </div>
         </CurrencyProvider>
       </body>

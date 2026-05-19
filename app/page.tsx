@@ -2,6 +2,8 @@ import { CatalogClient } from '@/components/catalog-client'
 import { getCatalogTags, getFeaturedProducts, getLiveProducts } from '@/lib/products'
 import { LivePrice } from '@/components/live-price'
 
+const LIGHTNING_ADDRESS = 'puffyred579@walletofsatoshi.com'
+
 export default function HomePage() {
   const products = getLiveProducts()
   const featured = getFeaturedProducts()
@@ -34,6 +36,10 @@ export default function HomePage() {
           <div>
             <strong>{featured.length}</strong>
             <span>Featured picks</span>
+          </div>
+          <div>
+            <strong>{LIGHTNING_ADDRESS}</strong>
+            <span>Visible payout identity for the store</span>
           </div>
         </div>
       </section>

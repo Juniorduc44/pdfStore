@@ -64,6 +64,28 @@ input {
   justify-content: flex-end;
 }
 
+.owner-lightning,
+.site-footer {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.owner-lightning span,
+.site-footer span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.owner-lightning code,
+.site-footer code {
+  background: rgba(26, 18, 11, 0.06);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+}
+
 .brand {
   align-items: center;
   display: inline-flex;
@@ -469,6 +491,13 @@ select {
   text-align: center;
 }
 
+.site-footer {
+  border-top: 1px solid var(--line);
+  justify-content: center;
+  margin-top: 36px;
+  padding: 20px 0 8px;
+}
+
 @media (max-width: 960px) {
   .hero,
   .product-hero,
@@ -496,6 +525,11 @@ select {
   .header-actions,
   .currency-switcher {
     align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .owner-lightning,
+  .site-footer {
     justify-content: flex-start;
   }
 
