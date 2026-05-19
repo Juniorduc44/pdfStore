@@ -1,0 +1,25 @@
+[
+  {
+    "id": "starter-guide",
+    "slug": "starter-guide",
+    "title": "Starter Guide",
+    "description": "A short sample product added through the import script.",
+    "details": "This title exists to verify the ingestion flow and storefront rendering.",
+    "priceSats": 500,
+    "coverImage": "/uploads/covers/starter-guide.svg",
+    "pdfPath": "storage/pdfs/starter-guide.pdf",
+    "previewEnabled": true,
+    "previewPath": "/uploads/previews/starter-guide.pdf",
+    "downloadFileName": "starter-guide.pdf",
+    "tags": [
+      "sample",
+      "guide"
+    ],
+    "author": "OpenAI",
+    "pageCount": 8,
+    "fileSizeBytes": 590,
+    "featured": true,
+    "status": "live",
+    "createdAt": "2026-05-19T20:00:59.517Z"
+  }
+]
