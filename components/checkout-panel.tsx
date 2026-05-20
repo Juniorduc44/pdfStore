@@ -22,18 +22,11 @@ type CheckoutState = {
 }
 
 export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) {
-  const [origin, setOrigin] = useState('')
   const [checkout, setCheckout] = useState<CheckoutState | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'pending' | 'paid' | 'error'>('idle')
   const [downloadUrl, setDownloadUrl] = useState('')
   const [error, setError] = useState('')
-
-  useEffect(() => {
-    setOrigin(window.location.origin)
-  }, [])
-
-  const payUrl = origin ? `${origin}/api/lnurl/pay/${slug}` : ''
   const bolt11Uri = checkout ? `lightning:${checkout.paymentRequest}` : ''
   const expiresLabel = checkout
     ? new Date(checkout.expiresAt).toLocaleString()
@@ -189,14 +182,12 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
         </div>
         {checkout ? (
           <div className="checkout-status">
-            <span>
-              Invoice amount: {formatSats(checkout.amountSats)} sats
-            </span>
-          <span>Session expires: {expiresLabel}</span>
-          {status === 'pending' ? <span>Waiting for payment confirmation.</span> : null}
-          {status === 'paid' ? <span>Payment confirmed. Download unlocked below.</span> : null}
-          {status === 'error' && error ? <span className="currency-note error">{error}</span> : null}
-        </div>
+            <span>Invoice amount: {formatSats(checkout.amountSats)} sats</span>
+            <span>Session expires: {expiresLabel}</span>
+            {status === 'pending' ? <span>Waiting for payment confirmation.</span> : null}
+            {status === 'paid' ? <span>Payment confirmed. Download unlocked below.</span> : null}
+            {status === 'error' && error ? <span className="currency-note error">{error}</span> : null}
+          </div>
         ) : (
           <div className="checkout-status">
             <span>Locked PDF download</span>

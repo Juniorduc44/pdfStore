@@ -1,6 +1,6 @@
 # PDF Store App
 
-Anonymous PDF storefront with LNURL-pay checkout and time-limited downloads.
+Anonymous PDF storefront with Lightning checkout and time-limited downloads.
 
 ## Structure
 
@@ -111,5 +111,5 @@ The storefront also displays the store Lightning Address for buyer visibility:
 - `puffyred579@walletofsatoshi.com`
 
 This is presented as the store payout identity only. The actual checkout flow
-still uses the app's own LNURL endpoints so product-specific payment verification
-and download delivery continue to work correctly.
+uses OpenNode charges so product-specific payment verification and download
+delivery continue to work correctly.

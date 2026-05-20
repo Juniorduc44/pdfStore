@@ -2,7 +2,7 @@
 
 ## Goal
 
-Sell PDFs with anonymous LNURL-pay checkout, no self-hosted Lightning node, and
+Sell PDFs with anonymous Lightning checkout, no self-hosted Lightning node, and
 time-limited downloads after payment.
 
 ## Recommended Shape
@@ -36,15 +36,9 @@ time-limited downloads after payment.
 - optional preview per title
 - tokenized post-payment delivery
 - separate preview excerpt enforcement so the paid file is never exposed publicly
-- base-price product model with live FX display and quote-locked sats checkout
+- base-price product model with live FX display and quote-based sats checkout
 - browser checkout session with settlement polling and manual unlock button
 - verified OpenNode webhook for asynchronous charge events
-
-## Important Constraint
-
-LUD-09 URL success actions require the URL domain to match the LNURL callback
-domain. That means a pure static frontend plus hosted LNbits paylinks is not
-enough for time-limited file delivery on your own domain.
 
 ## Initial Recommendation
 
