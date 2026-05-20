@@ -16,7 +16,7 @@ Anonymous PDF storefront with LNURL-pay checkout and time-limited downloads.
 ## Hosting Model
 
 - App: Vercel recommended, since pages and API routes stay on one domain
-- Lightning backend: LNbits cloud via API
+- Payment backend: OpenNode via API
 
 ## Core Features
 
@@ -27,7 +27,7 @@ Anonymous PDF storefront with LNURL-pay checkout and time-limited downloads.
 - live or draft product status
 - featured products, tags, author, page count, and file size metadata
 - preview PDFs per title
-- LNURL-pay checkout with LNbits cloud
+- OpenNode-powered paywall checkout with Lightning invoice creation
 - browser-side paywall with invoice generation, polling, and manual unlock check
 - short-lived tokenized download links after payment
 - live display currency switcher with BTC, SATS, USD, and custom ISO currency codes
@@ -82,18 +82,27 @@ Rates are fetched from:
 - `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/btc.json`
 
 The catalog stores a base price per product and converts to the selected display
-currency in real time. LNURL checkout quotes a sats amount from the current FX
-rate and signs that quote so the wallet callback cannot drift to a different
-amount mid-checkout.
+currency in real time. The checkout routes create an OpenNode charge using the
+product's configured base price and return the BOLT11 invoice for the browser
+paywall UI.
 
 ## Paywall UX
 
 Each product page now exposes two payment paths:
 
-- a browser-side paywall that generates an invoice, shows a QR code, polls for settlement, and unlocks the download button on-page
-- the raw LNURL endpoint for compatible Lightning wallets
+- a browser-side paywall that generates an OpenNode charge, shows a QR code, polls for settlement, and unlocks the download button on-page
+- an optional hosted checkout page supplied by OpenNode
 
 The paid PDF download remains private until the invoice is verified as settled.
+
+## OpenNode Webhook
+
+The app exposes a verified webhook at:
+
+- `/api/payment-webhook`
+
+OpenNode sends `application/x-www-form-urlencoded` charge events there. The
+route validates `hashed_order` with your API key before accepting the event.
 
 ## Store Identity
 

@@ -50,9 +50,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                 Preview first
               </Link>
             ) : null}
-            <a className="button tertiary" href={`/api/lnurl/pay/${product.slug}`}>
-              Open LNURL endpoint
-            </a>
           </div>
         </div>
       </section>

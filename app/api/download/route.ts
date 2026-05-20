@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { readFile } from 'fs/promises'
 import path from 'path'
 
-import { isPaymentSettled } from '@/lib/lnbits'
+import { getCharge } from '@/lib/opennode'
 import { getProductBySlug } from '@/lib/products'
 import { verifyDownloadToken } from '@/lib/tokens'
 
@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  const paid = await isPaymentSettled(payload.checkingId)
+  const charge = await getCharge(payload.checkingId)
+  const paid = charge.status === 'paid'
 
   if (!paid) {
     return NextResponse.json(

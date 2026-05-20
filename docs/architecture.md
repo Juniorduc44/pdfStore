@@ -12,20 +12,19 @@ time-limited downloads after payment.
 - `data/products.json`: generated product catalog
 - `storage/pdfs/`: private paid files
 - `public/uploads/previews/`: public preview files
-- `LNbits cloud`: invoice creation and payment status backend
+- `OpenNode`: charge creation, Lightning invoice delivery, and status backend
 
 ## Flow
 
 1. Store operator runs `npm run add-product`.
 2. The script prompts for product metadata and copies files into the correct directories.
 3. Storefront loads product catalog from `data/products.json`.
-4. User selects a product and opens a LNURL-pay endpoint for that item.
-5. API returns LUD-06 payRequest metadata for that product.
-6. Wallet calls the callback with the requested amount.
-7. API creates an invoice through LNbits and returns `pr`, `routes`, and a
-   `successAction`.
-8. After payment, wallet shows the `successAction`.
-9. User opens a short-lived download URL to fetch the paid PDF.
+4. User opens the product page and starts a browser checkout session.
+5. API creates an OpenNode charge for that product.
+6. The UI renders the returned BOLT11 invoice and optional hosted checkout URL.
+7. The product page polls charge status until OpenNode reports `paid`.
+8. API mints a short-lived download token after settlement.
+9. User downloads the paid PDF.
 
 ## Added Storefront Basics
 
@@ -39,6 +38,7 @@ time-limited downloads after payment.
 - separate preview excerpt enforcement so the paid file is never exposed publicly
 - base-price product model with live FX display and quote-locked sats checkout
 - browser checkout session with settlement polling and manual unlock button
+- verified OpenNode webhook for asynchronous charge events
 
 ## Important Constraint
 
@@ -48,10 +48,10 @@ enough for time-limited file delivery on your own domain.
 
 ## Initial Recommendation
 
-Use LUD-09 URL success actions and Vercel hosting:
+Use OpenNode and Vercel hosting:
 
 - Next.js app routes and serverless endpoints on one domain
-- LNbits API key stored in host environment variables
+- OpenNode API key stored in host environment variables
 - paid PDFs stored outside the public web root
 - preview excerpts stored publicly only as separate excerpt files, never as the full paid PDF
 
@@ -61,6 +61,6 @@ Use LUD-09 URL success actions and Vercel hosting:
 - The import script calculates `priceSats` as an imported snapshot for sorting
   and fallback display.
 - The storefront lets the user choose a display currency globally.
-- LNURL pay requests calculate the current sats amount from the base price.
-- A signed quote token is embedded into the LNURL callback URL so the sats
-  amount stays fixed for that checkout session even if rates move afterward.
+- OpenNode charges are created from the current base price for each checkout.
+- The browser tracks a signed checkout session token and unlocks the paid file
+  only after the matching charge is verified as settled.

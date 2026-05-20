@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 
 import { LivePriceBlock } from '@/components/live-price-block'
@@ -16,6 +16,7 @@ type CheckoutPanelProps = {
 type CheckoutState = {
   amountSats: number
   paymentRequest: string
+  hostedCheckoutUrl: string
   sessionToken: string
   expiresAt: number
 }
@@ -33,7 +34,6 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
   }, [])
 
   const payUrl = origin ? `${origin}/api/lnurl/pay/${slug}` : ''
-  const lightningUri = payUrl ? `lightning:${payUrl}` : ''
   const bolt11Uri = checkout ? `lightning:${checkout.paymentRequest}` : ''
   const expiresLabel = checkout
     ? new Date(checkout.expiresAt).toLocaleString()
@@ -87,13 +87,7 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
     }
   }, [checkout, slug, status])
 
-  const checkoutQrValue = useMemo(() => {
-    if (bolt11Uri) {
-      return bolt11Uri
-    }
-
-    return lightningUri
-  }, [bolt11Uri, lightningUri])
+  const checkoutQrValue = bolt11Uri
 
   async function startCheckout() {
     setIsLoading(true)
@@ -114,6 +108,7 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
       setCheckout({
         amountSats: payload.amountSats,
         paymentRequest: payload.paymentRequest,
+        hostedCheckoutUrl: payload.hostedCheckoutUrl,
         sessionToken: payload.sessionToken,
         expiresAt: payload.expiresAt
       })
@@ -197,13 +192,11 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
             <span>
               Invoice amount: {formatSats(checkout.amountSats)} sats
             </span>
-            <span>
-              Session expires: {expiresLabel}
-            </span>
-            {status === 'pending' ? <span>Waiting for payment confirmation.</span> : null}
-            {status === 'paid' ? <span>Payment confirmed. Download unlocked below.</span> : null}
-            {status === 'error' && error ? <span className="currency-note error">{error}</span> : null}
-          </div>
+          <span>Session expires: {expiresLabel}</span>
+          {status === 'pending' ? <span>Waiting for payment confirmation.</span> : null}
+          {status === 'paid' ? <span>Payment confirmed. Download unlocked below.</span> : null}
+          {status === 'error' && error ? <span className="currency-note error">{error}</span> : null}
+        </div>
         ) : (
           <div className="checkout-status">
             <span>Locked PDF download</span>
@@ -231,15 +224,25 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
         ) : (
           <div className="qr-placeholder">Preparing checkout…</div>
         )}
-        <code>{checkout?.paymentRequest || payUrl || 'Loading…'}</code>
+        <code>{checkout?.paymentRequest || 'Generate an invoice to display it here.'}</code>
         {checkout ? (
-          <a className="button tertiary" href={bolt11Uri}>
-            Open invoice in wallet
-          </a>
+          <div className="checkout-actions">
+            <a className="button tertiary" href={bolt11Uri}>
+              Open invoice in wallet
+            </a>
+            {checkout.hostedCheckoutUrl ? (
+              <a
+                className="button secondary"
+                href={checkout.hostedCheckoutUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Open hosted checkout
+              </a>
+            ) : null}
+          </div>
         ) : (
-          <a className="button tertiary" href={lightningUri}>
-            Open LNURL in wallet
-          </a>
+          <span className="currency-note">Generate an invoice to begin the paywall session.</span>
         )}
       </div>
     </section>

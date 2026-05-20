@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { getDownloadLinkTtlMinutes, getAppUrl } from '@/lib/env'
-import { isPaymentSettled } from '@/lib/lnbits'
+import { getCharge } from '@/lib/opennode'
 import { getProductBySlug } from '@/lib/products'
 import {
   createDownloadToken,
@@ -46,7 +46,8 @@ export async function GET(
       )
     }
 
-    const paid = await isPaymentSettled(session.checkingId)
+    const charge = await getCharge(session.chargeId)
+    const paid = charge.status === 'paid'
 
     if (!paid) {
       return NextResponse.json({
@@ -58,7 +59,7 @@ export async function GET(
     const expiresAt = Date.now() + getDownloadLinkTtlMinutes() * 60 * 1000
     const downloadToken = createDownloadToken({
       slug: product.slug,
-      checkingId: session.checkingId,
+      checkingId: session.chargeId,
       expiresAt
     })
 

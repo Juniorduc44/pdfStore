@@ -19,7 +19,7 @@ type PriceQuotePayload = {
 
 type CheckoutSessionPayload = {
   slug: string
-  checkingId: string
+  chargeId: string
   amountSats: number
   expiresAt: number
 }
