@@ -17,6 +17,13 @@ type PriceQuotePayload = {
   expiresAt: number
 }
 
+type CheckoutSessionPayload = {
+  slug: string
+  checkingId: string
+  amountSats: number
+  expiresAt: number
+}
+
 function encode(value: string): string {
   return Buffer.from(value, 'utf8').toString('base64url')
 }
@@ -89,6 +96,43 @@ export function verifyPriceQuoteToken(token: string): PriceQuotePayload | null {
   }
 
   const payload = JSON.parse(decode(encodedPayload)) as PriceQuotePayload
+
+  if (payload.expiresAt <= Date.now()) {
+    return null
+  }
+
+  return payload
+}
+
+export function createCheckoutSessionToken(
+  payload: CheckoutSessionPayload
+): string {
+  const encodedPayload = encode(JSON.stringify(payload))
+  const signature = sign(encodedPayload)
+  return `${encodedPayload}.${signature}`
+}
+
+export function verifyCheckoutSessionToken(
+  token: string
+): CheckoutSessionPayload | null {
+  const [encodedPayload, signature] = token.split('.')
+
+  if (!encodedPayload || !signature) {
+    return null
+  }
+
+  const expected = sign(encodedPayload)
+  const receivedBuffer = Buffer.from(signature)
+  const expectedBuffer = Buffer.from(expected)
+
+  if (
+    receivedBuffer.length !== expectedBuffer.length ||
+    !timingSafeEqual(receivedBuffer, expectedBuffer)
+  ) {
+    return null
+  }
+
+  const payload = JSON.parse(decode(encodedPayload)) as CheckoutSessionPayload
 
   if (payload.expiresAt <= Date.now()) {
     return null

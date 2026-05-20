@@ -257,7 +257,8 @@ select {
 .meta-row,
 .detail-stats,
 .detail-actions,
-.card-actions {
+.card-actions,
+.checkout-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -457,6 +458,21 @@ select {
   max-width: 260px;
   overflow-wrap: anywhere;
   text-align: center;
+}
+
+.checkout-status,
+.download-unlock {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.checkout-status span {
+  color: var(--muted);
+}
+
+.download-unlock {
+  margin-top: 18px;
 }
 
 .qr-placeholder {

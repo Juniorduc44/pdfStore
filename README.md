@@ -28,6 +28,7 @@ Anonymous PDF storefront with LNURL-pay checkout and time-limited downloads.
 - featured products, tags, author, page count, and file size metadata
 - preview PDFs per title
 - LNURL-pay checkout with LNbits cloud
+- browser-side paywall with invoice generation, polling, and manual unlock check
 - short-lived tokenized download links after payment
 - live display currency switcher with BTC, SATS, USD, and custom ISO currency codes
 
@@ -84,6 +85,15 @@ The catalog stores a base price per product and converts to the selected display
 currency in real time. LNURL checkout quotes a sats amount from the current FX
 rate and signs that quote so the wallet callback cannot drift to a different
 amount mid-checkout.
+
+## Paywall UX
+
+Each product page now exposes two payment paths:
+
+- a browser-side paywall that generates an invoice, shows a QR code, polls for settlement, and unlocks the download button on-page
+- the raw LNURL endpoint for compatible Lightning wallets
+
+The paid PDF download remains private until the invoice is verified as settled.
 
 ## Store Identity
 

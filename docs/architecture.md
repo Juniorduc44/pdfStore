@@ -38,6 +38,7 @@ time-limited downloads after payment.
 - tokenized post-payment delivery
 - separate preview excerpt enforcement so the paid file is never exposed publicly
 - base-price product model with live FX display and quote-locked sats checkout
+- browser checkout session with settlement polling and manual unlock button
 
 ## Important Constraint
 
