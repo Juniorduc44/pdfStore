@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { getAppUrl, getPriceQuoteTtlMinutes } from '@/lib/env'
+import { getAppUrlFromRequest, getPriceQuoteTtlMinutes } from '@/lib/env'
 import { createCharge } from '@/lib/opennode'
 import { resolveCurrentProductPrice } from '@/lib/pricing'
 import { getProductBySlug } from '@/lib/products'
@@ -13,7 +13,7 @@ type RouteContext = {
 }
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: RouteContext
 ) {
   try {
@@ -28,8 +28,9 @@ export async function POST(
 
     const resolvedPrice = await resolveCurrentProductPrice(product)
     const chargeAmount = (resolvedPrice.amountSats / 100_000_000).toFixed(8)
-    const callbackUrl = `${getAppUrl()}/api/payment-webhook`
-    const successUrl = `${getAppUrl()}/products/${product.slug}`
+    const appUrl = getAppUrlFromRequest(request)
+    const callbackUrl = `${appUrl}/api/payment-webhook`
+    const successUrl = `${appUrl}/products/${product.slug}`
     const charge = await createCharge({
       amount: chargeAmount,
       currency: 'BTC',

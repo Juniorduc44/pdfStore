@@ -191,7 +191,7 @@ export function CheckoutPanel({ slug, priceSats, pricing }: CheckoutPanelProps) 
         ) : (
           <div className="checkout-status">
             <span>Locked PDF download</span>
-            <span>Preview stays public. Paid file stays private until settlement.</span>
+            <span>Click Buy now to generate an invoice and unlock the download after payment.</span>
           </div>
         )}
         {downloadUrl ? (

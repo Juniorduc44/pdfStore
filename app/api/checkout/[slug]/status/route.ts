@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { getDownloadLinkTtlMinutes, getAppUrl } from '@/lib/env'
+import { getDownloadLinkTtlMinutes, getAppUrlFromRequest } from '@/lib/env'
 import { getCharge } from '@/lib/opennode'
 import { getProductBySlug } from '@/lib/products'
 import {
@@ -66,7 +66,7 @@ export async function GET(
     return NextResponse.json({
       status: 'PAID',
       paid: true,
-      downloadUrl: `${getAppUrl()}/api/download?token=${downloadToken}`,
+      downloadUrl: `${getAppUrlFromRequest(request)}/api/download?token=${downloadToken}`,
       expiresAt
     })
   } catch (error) {

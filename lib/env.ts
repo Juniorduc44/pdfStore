@@ -12,12 +12,15 @@ export function getAppUrl(): string {
   return requireEnv('NEXT_PUBLIC_APP_URL').replace(/\/$/, '')
 }
 
-export function getLnbitsBaseUrl(): string {
-  return requireEnv('LNBITS_BASE_URL').replace(/\/$/, '')
-}
+export function getAppUrlFromRequest(request: Request): string {
+  const configured = process.env.NEXT_PUBLIC_APP_URL
 
-export function getLnbitsInvoiceKey(): string {
-  return requireEnv('LNBITS_INVOICE_KEY')
+  if (configured) {
+    return configured.replace(/\/$/, '')
+  }
+
+  const url = new URL(request.url)
+  return `${url.protocol}//${url.host}`
 }
 
 export function getDownloadTokenSecret(): string {
